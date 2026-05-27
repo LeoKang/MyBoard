@@ -39,6 +39,8 @@ class Login extends Component {
         console.log(response);
         if (response.status < 300) {
           console.log("[Login.js] Call props.doLogin");
+          console.log(response.data);
+          console.log("response.data.UserID : ", response.data.UserID);
           this.props.doLogin();
           localStorage.setItem("token", response.data.token);
           if (response.data.UserID) {

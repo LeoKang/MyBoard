@@ -67,9 +67,10 @@ class Profile extends Component {
   }
   getProfile() {
     const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
     console.log("[*] getProfile");
     axios
-      .get(`${API_BASE_URL}/users/profile/`, {
+      .get(`${API_BASE_URL}/users/profile/${userId}`, {
         headers: {
           "Authorization": `Token ${token}`,
         },

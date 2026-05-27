@@ -1,4 +1,4 @@
-README.md
+백엔드를 위한 DJANGO REST FRAMEWORK with 파이썬 / 영진닷컴 / 권태형 저
 
 1.  python -m venv myvenv
 

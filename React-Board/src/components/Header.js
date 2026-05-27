@@ -14,14 +14,15 @@ class Header extends Component {
     console.log("[Header.js] handleLogout");
     // event.preventDefault();
     localStorage.setItem("token", null);
+    localStorage.setItem("userId", null);
     localStorage.setItem("username", null);
     console.log("[Header.js] Call doLogout");
     this.props.doLogout();
   }
 
   render() {
-    // console.log("[*] Header Component");
-    // console.log("isLogin: ", this.props.isLogin);
+    console.log("[*] Header Component");
+    console.log("isLogin: ", this.props.isLogin);
     return (
       <div className="navbar">
         <div className="navbar-brand">
