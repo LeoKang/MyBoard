@@ -35,8 +35,10 @@ class Form extends Component {
     formData.append("Content", this.state.body);
     // formData.append("image", this.state.image);
     console.log(formData.entries());
+    console.log(this.state.title);
+    console.log(this.state.body);
     axios
-      .post(`${API_BASE_URL}/api/posts/`, formData, {
+      .post(`${API_BASE_URL}/posts/`, formData, {
         headers: {
           "content-type": "multipart/form-data",
           "Authorization": `Token ${token}`,

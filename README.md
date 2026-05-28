@@ -13,6 +13,6 @@
 
 6.  python manage.py startapp users
 
-7.  pip install pillow, axios
+7.  pip install pillow, axios, django-filter
 
 8.  npm create vite@7

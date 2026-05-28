@@ -112,7 +112,7 @@ class Profile extends Component {
               </h1>
               <div className="tags are-medium">
                 <span className="tag" onChange={this.handleChange}>
-                  #{this.state.position}
+                  #POSITION : {this.state.position}
                 </span>
                 {this.state.subjects.split(", ").map((subject, index) => {
                   return (
@@ -121,7 +121,7 @@ class Profile extends Component {
                       onChange={this.handleChange}
                       key={index}
                     >
-                      #{subject}
+                      #SUBJECT : {subject}
                     </span>
                   );
                 })}

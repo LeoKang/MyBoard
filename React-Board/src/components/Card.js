@@ -4,12 +4,13 @@ import { Link } from "react-router-dom";
 class Card extends Component {
   render() {
     const post = this.props.post;
+    console.log("[Card.js] post : ", post);
     return (
       <div className="column is-one-quarter">
         <div className="card">
           <Link
             to={{
-              pathname: "/detail/" + post.ID,
+              pathname: "/detail/" + post.pk,
               post: post,
             }}
           >
@@ -26,13 +27,13 @@ class Card extends Component {
               <div className="media">
                 <div className="media-item">
                   <div className="title is-4" size={4}>
-                    {post.Title}
+                    {post.title}
                   </div>
-                  <div className="subtitle is-6">@{post.UserID}</div>
+                  <div className="subtitle is-6">@{post.profile.nickname}</div>
                 </div>
               </div>
               <div className="content preview">
-                <p>{post.Content}</p>
+                <p>{post.body}</p>
               </div>
             </div>
           </Link>

@@ -10,7 +10,7 @@ const Post = (props) => {
   return (
     <section>
       <div className="head">
-        <h1 className="title">{props.Title}</h1>
+        <h1 className="title">{props.title}</h1>
         <div className="level">
           <div className="level-left">
             <div className="level-item">
