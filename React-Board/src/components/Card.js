@@ -11,7 +11,7 @@ class Card extends Component {
           <Link
             to={{
               pathname: "/detail/" + post.pk,
-              post: post,
+              state: {post: post},
             }}
           >
             <div className="card-image">

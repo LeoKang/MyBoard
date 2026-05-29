@@ -6,15 +6,16 @@ import "../shared/App.css";
 
 const Post = (props) => {
   console.log("[Post.js] Constructor");
-  console.log(props);
+  console.log("props: ", props);
+  
   return (
     <section>
       <div className="head">
-        <h1 className="title">{props.title}</h1>
+        <h1 className="title">{props.post?.title}</h1>
         <div className="level">
           <div className="level-left">
             <div className="level-item">
-              <h2 className="subtitle">@TaeBbong</h2>
+              <h2 className="subtitle">@{props.post.profile.nickname}</h2>
             </div>
           </div>
           <div className="level-right">
@@ -43,13 +44,7 @@ const Post = (props) => {
         </figure>
         <div className="content is-medium">
           <p>
-            Lorem Ipsum is simply dummy Lorem Ipsum is simply dummy Lorem Ipsum
-            is simply dummy Lorem Ipsum is simply dummy Lorem Ipsum is simply
-            dummy Lorem Ipsum is simply dummy Lorem Ipsum is simply dummy Lorem
-            Ipsum is simply dummy Lorem Ipsum is simply dummy Lorem Ipsum is
-            simply dummy Lorem Ipsum is simply dummy Lorem Ipsum is simply dummy
-            Lorem Ipsum is simply dummy Lorem Ipsum is simply dummy Lorem Ipsum
-            is simply dummy
+            {props.post.body}
           </p>
         </div>
       </div>

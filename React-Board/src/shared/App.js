@@ -54,7 +54,7 @@ class App extends Component {
           <Route path="/my" component={My} />
         </div>
         <div className="centered">
-          <Route path="/detail/:pk" render={(post) => <Detail post={post} />} />
+          <Route path="/detail/:pk" render={(routeProps) => <Detail post={routeProps} />} />
           <Route
             path="/new"
             render={() => <New isLogin={this.state.isLogin} />}

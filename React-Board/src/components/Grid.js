@@ -12,7 +12,7 @@ class Grid extends Component {
     this.parsePosts();
   }
   parsePosts() {
-    // console.log("[*] parsePosts");
+    console.log("[*] parsePosts");
   }
   render() {
     console.log("[*] Grid render");
