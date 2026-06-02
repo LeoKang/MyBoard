@@ -12,6 +12,7 @@ class Form extends Component {
       body: "",
       image: null,
       imageName: "",
+      likes: "",
     };
     this.handleChange = this.handleChange.bind(this);
     this.fileChangeHandler = this.fileChangeHandler.bind(this);
@@ -30,24 +31,37 @@ class Form extends Component {
     const token = localStorage.getItem("token");
     console.log("[*] createPost");
     const formData = new FormData();
-    formData.append("Title", this.state.title);
-    // formData.append("category", this.state.category);
-    formData.append("Content", this.state.body);
-    // formData.append("image", this.state.image);
+    formData.append("title", this.state.title);
+    formData.append("category", this.state.category);
+    formData.append("body", this.state.body);
+    if (this.state.image) {
+      formData.append("image", this.state.image);
+    }
+    if (this.state.likes.trim()) {
+      this.state.likes
+        .split(",")
+        .map((id) => id.trim())
+        .filter(Boolean)
+        .forEach((id) => formData.append("likes", id));
+    }
     console.log(formData.entries());
     console.log(this.state.title);
     console.log(this.state.body);
     axios
       .post(`${API_BASE_URL}/posts/`, formData, {
         headers: {
-          "content-type": "multipart/form-data",
+          // "content-type": "multipart/form-data",
           "Authorization": `Token ${token}`,
         },
       })
       .then((response) => {
+        console.log("response.data : ", response.data);
         if (response.status < 300) {
           this.props.history.push("/");
         }
+      })
+      .catch((error) => {
+        console.log(error.response.data);
       });
   }
   render() {
@@ -69,7 +83,12 @@ class Form extends Component {
           <label className="label">카테고리</label>
           <div className="control">
             <div className="select">
-              <select>
+              <select
+                name="category"
+                value={this.state.category}
+                onChange={this.handleChange}
+              >
+                <option value="">카테고리를 선택하세요</option>
                 <option>웹 프론트엔드</option>
                 <option>웹 백엔드</option>
                 <option>iOS 앱</option>
@@ -90,6 +109,21 @@ class Form extends Component {
               onChange={this.handleChange}
             ></textarea>
           </div>
+        </div>
+
+        <div className="field">
+          <label className="label">좋아요 사용자 ID</label>
+          <div className="control">
+            <input
+              className="input is-hovered"
+              type="text"
+              name="likes"
+              value={this.state.likes}
+              onChange={this.handleChange}
+              placeholder="예: 1,2,5"
+            />
+          </div>
+          <p className="help">쉼표(,)로 여러 사용자 ID를 입력하세요.</p>
         </div>
 
         <div className="field">

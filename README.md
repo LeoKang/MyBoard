@@ -16,3 +16,9 @@
 7.  pip install pillow, axios, django-filter
 
 8.  npm create vite@7
+
+# requirements.txt로 패키지 한번에 설치
+
+9.  pip install -r requirements.txt
+
+10. .env 파일 생성
