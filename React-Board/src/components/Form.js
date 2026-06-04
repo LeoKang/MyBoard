@@ -47,7 +47,6 @@ const Form = () => {
     }
 
     logger.api("POST", `${API_BASE_URL}/posts/`, { title, category, body });
-
     axios
       .post(`${API_BASE_URL}/posts/`, formData, {
         headers: {

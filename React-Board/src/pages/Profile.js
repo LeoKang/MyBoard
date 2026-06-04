@@ -64,6 +64,7 @@ const Profile = ({ isLogin }) => {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
     console.log("[*] getProfile");
+    logger.api("GET", `${API_BASE_URL}/users/profile/${userId}`);
     axios
       .get(`${API_BASE_URL}/users/profile/${userId}`, {
         headers: {
