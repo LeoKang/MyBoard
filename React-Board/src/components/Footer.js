@@ -1,12 +1,13 @@
 import React from "react";
-import "../shared/App.css";
 
-const Header = () => {
+const Footer = () => {
   return (
-    <div className="footer">
-      <p>2021 @TaeBbong, All rights reserved</p>
-    </div>
+    <footer className="w-full bg-gray-50 border-t border-gray-200 py-6 text-center mt-8">
+      <p className="text-sm text-gray-500 max-w-md mx-auto">
+        &copy; {new Date().getFullYear()} @TaeBbong. All rights reserved.
+      </p>
+    </footer>
   );
 };
 
-export default Header;
+export default Footer;

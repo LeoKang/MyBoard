@@ -1,26 +1,22 @@
-import React, { Component } from "react";
+import React from "react";
 import { Post, Comment } from "../components/index";
+import { logger } from "../shared/Logger";
 
-class Detail extends Component {
-  render() {
-    const routeProps = this.props.post;  // ✅ props에서 꺼내기
-    const data = routeProps.location.state?.post;  // ✅ state에서 글 데이터
-    const pk = routeProps.match.params.pk;  // ✅ URL에서 pk 꺼내기 (정규식 불필요)
+const Detail = ({ post: routeProps }) => {
+  const data = routeProps.location?.state?.post;
+  const pk = routeProps.match?.params?.pk;
 
-    console.log("[Detail.js] render()");
-    console.log("routeProps:", routeProps);
-    console.log("data:", data);
-    console.log("pk:", pk);
+  logger.render("Detail", `Rendering detail view for post ID (PK): ${pk}`);
+  logger.info("Detail", "Router navigation state payload:", { routeProps, data });
 
-    return (
-      <div>
-        <Post post={data} pk={pk}/>
-        <hr />
-        <Comment />
-        <br />
-      </div>
-    );
-  }
-}
+  return (
+    <div className="w-full max-w-4xl mx-auto px-4 sm:px-6 py-8">
+      <Post post={data} pk={pk} />
+      <hr className="my-8 border-gray-200" />
+      <Comment />
+      <br />
+    </div>
+  );
+};
 
 export default Detail;

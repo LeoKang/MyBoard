@@ -1,14 +1,13 @@
-import React, { Component } from "react";
+import React from "react";
 import { Grid } from "../components/index";
 
-class My extends Component {
-  render() {
-    return (
-      <div className="My">
-        <Grid />
-      </div>
-    );
-  }
-}
+const My = () => {
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">내 글</h2>
+      <Grid />
+    </div>
+  );
+};
 
 export default My;

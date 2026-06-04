@@ -1,20 +1,21 @@
-import React, { Component } from "react";
-import { Redirect, withRouter } from "react-router-dom";
+import React from "react";
+import { Redirect } from "react-router-dom";
 import { Form } from "../components/index";
 
-class New extends Component {
-  render() {
-    const isLogin = this.props.isLogin;
-    if (isLogin === false) {
-      return <Redirect to="/login" />;
-    }
-    return (
-      <div className="container is-half">
-        <Form />
-        <br />
-      </div>
-    );
+const New = ({ isLogin }) => {
+  if (isLogin === false) {
+    return <Redirect to="/login" />;
   }
-}
 
-export default withRouter(New);
+  return (
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+      <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+        새 글 작성
+      </h2>
+      <Form />
+      <br />
+    </div>
+  );
+};
+
+export default New;

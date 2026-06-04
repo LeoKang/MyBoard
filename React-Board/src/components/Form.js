@@ -1,160 +1,177 @@
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import axios from "axios";
-import React, { Component } from "react";
 import { API_BASE_URL } from "../config/api";
-import { withRouter } from "react-router-dom";
+import { logger } from "../shared/Logger";
 
-class Form extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      title: "",
-      category: "",
-      body: "",
-      image: null,
-      imageName: "",
-      likes: "",
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.fileChangeHandler = this.fileChangeHandler.bind(this);
-    this.postClick = this.postClick.bind(this);
-  }
-  handleChange(event) {
-    const target = event.target;
-    this.setState({ [target.name]: target.value });
-  }
-  fileChangeHandler(event) {
+const Form = () => {
+  const history = useHistory();
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
+  const [body, setBody] = useState("");
+  const [image, setImage] = useState(null);
+  const [imageName, setImageName] = useState("");
+  const [likes, setLikes] = useState("");
+
+  const handleTitleChange = (event) => setTitle(event.target.value);
+  const handleCategoryChange = (event) => setCategory(event.target.value);
+  const handleBodyChange = (event) => setBody(event.target.value);
+  const handleLikesChange = (event) => setLikes(event.target.value);
+
+  const fileChangeHandler = (event) => {
     event.preventDefault();
     const file = event.target.files[0];
-    this.setState({ image: file, imageName: file["name"] });
-  }
-  postClick() {
-    const token = localStorage.getItem("token");
-    console.log("[*] createPost");
-    const formData = new FormData();
-    formData.append("title", this.state.title);
-    formData.append("category", this.state.category);
-    formData.append("body", this.state.body);
-    if (this.state.image) {
-      formData.append("image", this.state.image);
+    if (file) {
+      setImage(file);
+      setImageName(file.name);
+      logger.info("Form", `File selected: ${file.name}`);
     }
-    if (this.state.likes.trim()) {
-      this.state.likes
+  };
+
+  const postClick = () => {
+    const token = localStorage.getItem("token");
+    logger.info("Form", "Submitting new post...", { title, category, likes });
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("category", category);
+    formData.append("body", body);
+    if (image) {
+      formData.append("image", image);
+    }
+    if (likes.trim()) {
+      likes
         .split(",")
         .map((id) => id.trim())
         .filter(Boolean)
         .forEach((id) => formData.append("likes", id));
     }
-    console.log(formData.entries());
-    console.log(this.state.title);
-    console.log(this.state.body);
+
+    logger.api("POST", `${API_BASE_URL}/posts/`, { title, category, body });
+
     axios
       .post(`${API_BASE_URL}/posts/`, formData, {
         headers: {
-          // "content-type": "multipart/form-data",
-          "Authorization": `Token ${token}`,
+          Authorization: `Token ${token}`,
         },
       })
       .then((response) => {
-        console.log("response.data : ", response.data);
+        logger.success("Form", "Post creation succeeded", response.data);
         if (response.status < 300) {
-          this.props.history.push("/");
+          history.push("/");
         }
       })
       .catch((error) => {
-        console.log(error.response.data);
+        logger.error("Form", "Post creation failed", error);
       });
-  }
-  render() {
-    return (
+  };
+
+  return (
+    <div className="space-y-6 max-w-2xl mx-auto bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
       <div>
-        <div className="field">
-          <label className="label">제목</label>
-          <div className="control">
-            <input
-              className="input is-hovered"
-              type="text"
-              name="title"
-              onChange={this.handleChange}
-            />
-          </div>
-        </div>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">
+          제목
+        </label>
+        <input
+          className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all duration-200"
+          type="text"
+          name="title"
+          value={title}
+          onChange={handleTitleChange}
+          placeholder="제목을 입력하세요."
+        />
+      </div>
 
-        <div className="field">
-          <label className="label">카테고리</label>
-          <div className="control">
-            <div className="select">
-              <select
-                name="category"
-                value={this.state.category}
-                onChange={this.handleChange}
-              >
-                <option value="">카테고리를 선택하세요</option>
-                <option>웹 프론트엔드</option>
-                <option>웹 백엔드</option>
-                <option>iOS 앱</option>
-                <option>안드로이드 앱</option>
-                <option>하이브리드 앱</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div className="field">
-          <label className="label">본문</label>
-          <div className="control">
-            <textarea
-              className="textarea is-hovered"
-              rows="10"
-              name="body"
-              onChange={this.handleChange}
-            ></textarea>
-          </div>
-        </div>
-
-        <div className="field">
-          <label className="label">좋아요 사용자 ID</label>
-          <div className="control">
-            <input
-              className="input is-hovered"
-              type="text"
-              name="likes"
-              value={this.state.likes}
-              onChange={this.handleChange}
-              placeholder="예: 1,2,5"
-            />
-          </div>
-          <p className="help">쉼표(,)로 여러 사용자 ID를 입력하세요.</p>
-        </div>
-
-        <div className="field">
-          <label className="label">배경사진</label>
-          <div className="control">
-            <div className="file has-name">
-              <label className="file-label">
-                <input
-                  className="file-input"
-                  type="file"
-                  name="image"
-                  onChange={this.fileChangeHandler}
-                />
-                <span className="file-cta">
-                  <span className="file-label">Choose a file…</span>
-                </span>
-                <span className="file-name">{this.state.imageName}</span>
-              </label>
-            </div>
-          </div>
-        </div>
-        <div className="field is-grouped">
-          <div className="control">
-            <button className="button is-primary" onClick={this.postClick}>
-              완료
-            </button>
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">
+          카테고리
+        </label>
+        <div className="relative">
+          <select
+            name="category"
+            value={category}
+            onChange={handleCategoryChange}
+            className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all duration-200 bg-white appearance-none"
+          >
+            <option value="">카테고리를 선택하세요</option>
+            <option value="웹 프론트엔드">웹 프론트엔드</option>
+            <option value="웹 백엔드">웹 백엔드</option>
+            <option value="iOS 앱">iOS 앱</option>
+            <option value="안드로이드 앱">안드로이드 앱</option>
+            <option value="하이브리드 앱">하이브리드 앱</option>
+          </select>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+            <svg
+              className="fill-current h-4 w-4"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+            >
+              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+            </svg>
           </div>
         </div>
       </div>
-    );
-  }
-}
 
-export default withRouter(Form);
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">
+          본문
+        </label>
+        <textarea
+          className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all duration-200 resize-none"
+          rows={8}
+          name="body"
+          value={body}
+          onChange={handleBodyChange}
+          placeholder="본문 내용을 입력하세요."
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">
+          좋아요 사용자 ID
+        </label>
+        <input
+          className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none transition-all duration-200"
+          type="text"
+          name="likes"
+          value={likes}
+          onChange={handleLikesChange}
+          placeholder="예: 1, 2, 5"
+        />
+        <p className="text-xs text-gray-400 mt-1">
+          쉼표(,)로 구분하여 여러 사용자 ID를 입력하세요.
+        </p>
+      </div>
+
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">
+          배경사진
+        </label>
+        <div className="flex items-center space-x-3">
+          <label className="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-150 shadow-sm">
+            파일 선택...
+            <input
+              type="file"
+              name="image"
+              onChange={fileChangeHandler}
+              className="sr-only"
+            />
+          </label>
+          <span className="text-sm text-gray-500 truncate max-w-xs">
+            {imageName || "선택된 파일 없음"}
+          </span>
+        </div>
+      </div>
+
+      <div className="pt-4 flex justify-end">
+        <button
+          className="inline-flex items-center px-6 py-2.5 border border-transparent text-sm font-semibold rounded-lg text-white bg-purple-600 hover:bg-purple-700 transition duration-150 shadow-sm hover:shadow"
+          onClick={postClick}
+        >
+          완료
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default Form;

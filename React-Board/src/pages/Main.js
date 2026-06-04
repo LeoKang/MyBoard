@@ -1,47 +1,44 @@
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import React, { Component } from "react";
 import { API_BASE_URL } from "../config/api";
 import { Grid } from "../components/index";
+import { logger } from "../shared/Logger";
 
-class Main extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      posts: null,
-    };
-    this.getPosts = this.getPosts.bind(this);
-    // this.getPosts();
-  }
+const Main = () => {
+  const [posts, setPosts] = useState(null);
 
-  componentDidMount() {
-    this.getPosts();
-  }
-
-  getPosts() {
+  const getPosts = () => {
     const token = localStorage.getItem("token");
-    console.log("[*] getPosts");
-    axios.get(`${API_BASE_URL}/posts/`, {
-      headers: {
-        Authorization: `Token ${token}`,
-      },
-    }).then((response) => {
-      console.log(response.data);
-      if (response.status < 300) {
-        console.log(response.data.result);
-        this.setState({
-          posts: response.data,
-        });
-      }
-    });
-  }
-  render() {
-    console.log("[*] Main render");
-    return (
-      <div>
-        <Grid posts={this.state.posts} />
-      </div>
-    );
-  }
-}
+    logger.info("Main", "Attempting to fetch posts...");
+    logger.api("GET", `${API_BASE_URL}/posts/`);
+    axios
+      .get(`${API_BASE_URL}/posts/`, {
+        headers: {
+          Authorization: `Token ${token}`,
+        },
+      })
+      .then((response) => {
+        logger.success("Main", "Successfully loaded posts list", response.data);
+        if (response.status < 300) {
+          setPosts(response.data);
+        }
+      })
+      .catch((error) => {
+        logger.error("Main", "Failed to load posts list", error);
+      });
+  };
+
+  useEffect(() => {
+    getPosts();
+  }, []);
+
+  logger.render("Main", `Current posts count: ${posts ? posts.length : 0}`);
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <Grid posts={posts} />
+    </div>
+  );
+};
 
 export default Main;

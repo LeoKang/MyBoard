@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { Route } from "react-router-dom";
 import {
   Main,
@@ -11,72 +11,53 @@ import {
   Profile,
 } from "../pages/index";
 import { Header, Footer, Menu } from "../components/index";
-import "./App.css";
+import { logger } from "./Logger";
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    console.log("[App.js] Constructor");
-    const token = localStorage.getItem("token");
-    this.state = {
-      // eslint-disable-next-line
-      isLogin: token != "null",
-    };
-    console.log("[App.js] token: ", token);
-    console.log("[App.js] isLogin: ", this.state.isLogin);
-    this.doLogin = this.doLogin.bind(this);
-    this.doLogout = this.doLogout.bind(this);
-  }
-  doLogin() {
-    console.log("[App.js] doLogin");
-    this.setState({ isLogin: true }, () => {
-      console.log("[App.js] isLogin after doLogin: ", this.state.isLogin);
-    });
-  }
-  doLogout() {
-    console.log("[App.js] doLogout");
-    this.setState({ isLogin: false }, () => {
-      console.log("[App.js] isLogin after doLogout: ", this.state.isLogin);
-    });
-  }
-  render() {
-    return (
+const App = () => {
+  logger.render("App", `Initial token check: ${localStorage.getItem("token")}`);
+  const token = localStorage.getItem("token");
+  
+  // eslint-disable-next-line
+  const [isLogin, setIsLogin] = useState(token && token !== "null" && token !== "undefined");
+
+  const doLogin = () => {
+    logger.success("App", "doLogin callback executed, setting isLogin = true");
+    setIsLogin(true);
+  };
+
+  const doLogout = () => {
+    logger.info("App", "doLogout callback executed, setting isLogin = false");
+    setIsLogin(false);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-between">
       <div>
-        <Header doLogout={this.doLogout} isLogin={this.state.isLogin} />
-        <div className="centered">
+        <Header doLogout={doLogout} isLogin={isLogin} />
+        
+        {/* Menu Wrapper */}
+        <div className="flex justify-center items-center bg-white overflow-auto">
           <Route exact path="/" component={Menu} />
           <Route path="/like" component={Menu} />
           <Route path="/my" component={Menu} />
         </div>
-        <div className="ncentered">
+
+        {/* Content Wrapper */}
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <Route exact path="/" component={Main} />
           <Route path="/like" component={Like} />
           <Route path="/my" component={My} />
-        </div>
-        <div className="centered">
           <Route path="/detail/:pk" render={(routeProps) => <Detail post={routeProps} />} />
-          <Route
-            path="/new"
-            render={() => <New isLogin={this.state.isLogin} />}
-          />
-          <Route
-            path="/profile"
-            render={() => <Profile isLogin={this.state.isLogin} />}
-          />
-        </div>
-        <div>
-          <Route
-            path="/login"
-            render={() => (
-              <Login doLogin={this.doLogin} isLogin={this.state.isLogin} />
-            )}
-          />
+          <Route path="/new" render={() => <New isLogin={isLogin} />} />
+          <Route path="/profile" render={() => <Profile isLogin={isLogin} />} />
+          <Route path="/login" render={() => <Login doLogin={doLogin} isLogin={isLogin} />} />
           <Route path="/register" component={Register} />
-        </div>
-        <Footer />
+        </main>
       </div>
-    );
-  }
-}
+
+      <Footer />
+    </div>
+  );
+};
 
 export default App;
